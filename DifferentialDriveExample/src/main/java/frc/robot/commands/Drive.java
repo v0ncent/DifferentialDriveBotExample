@@ -22,9 +22,12 @@ public class Drive extends CommandBase {
     @Override
     public void execute() {
         double forwardBack = controller.getLeftY();
-        double rotate = controller.getLeftY();
+        double rotate = controller.getLeftX();
 
         driveTrain.arcadeDrive(forwardBack, rotate);
+
+        // to test out other driving method comment out above and uncomment below
+        // driveTrain.semiConstantCurvatureDrive(forwardBack, rotate);
     }
 
     @Override

@@ -55,4 +55,24 @@ public class DriveTrain extends SubsystemBase {
         }
     }
 
+    public void semiConstantCurvatureDrive(double T, double S) {
+        // calculate semi-constant curvature values
+        double L = 12 * (((T + Math.abs(T) * S) + (T+S)) / 2);
+        double R = 12 * (((T - Math.abs(T) * S) + (T-S)) / 2);
+
+        // Determine maximum output
+        double m = Math.max(Math.abs(T),Math.abs(S));
+
+        // scale if needed 
+        if (m > 1.0) {
+            L /= m;
+            R /= m;
+        }
+
+        // set mototrs to calculated power
+        leftGroup.set(L);
+        rightGroup.set(R);
+
+    }
+
 }
