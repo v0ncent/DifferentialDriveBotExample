@@ -21,7 +21,7 @@ public class Drive extends CommandBase {
 
     @Override
     public void execute() {
-        double forwardBack = controller.getLeftY();
+        double forwardBack = -controller.getLeftY();
         double rotate = controller.getLeftX();
 
         driveTrain.arcadeDrive(forwardBack, rotate);
