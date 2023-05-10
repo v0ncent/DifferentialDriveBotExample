@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Drive;
+import frc.robot.commands.MoveFeet;
 import frc.robot.subsystems.DriveTrain;
 
 /**
@@ -19,7 +20,7 @@ import frc.robot.subsystems.DriveTrain;
 public class RobotContainer {
 
   private final DriveTrain driveTrain = new DriveTrain();
-  private final CommandXboxController controller = new CommandXboxController(Constants.JOYSTICK_PORT);
+  private final CommandXboxController controller = new CommandXboxController(Constants.Controllers.JOYSTICK_PORT);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -49,6 +50,19 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return null;
+    return new MoveFeet(driveTrain, 9);
   }
+
+  public void teleOpPeriodic() {
+    driveTrain.teleOpPeriodic();
+  }
+
+  public void teleOpInit() {
+    driveTrain.resetEncoders();
+  }
+
+  public void autoInit() {
+    driveTrain.resetEncoders();
+  }
+  
 }

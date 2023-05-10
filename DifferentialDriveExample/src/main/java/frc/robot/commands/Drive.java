@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants;
 import frc.robot.subsystems.DriveTrain;
 
 public class Drive extends CommandBase {
@@ -21,10 +22,10 @@ public class Drive extends CommandBase {
 
     @Override
     public void execute() {
-        double forwardBack = -controller.getLeftY();
-        double rotate = controller.getLeftX();
+        double rotate = controller.getRawAxis(Constants.Controllers.JOYSTICKY);
+        double forwardBack =  controller.getRawAxis(Constants.Controllers.JOYSTICKZ);
 
-        driveTrain.arcadeDrive(forwardBack, rotate);
+        driveTrain.arcadeDrive(rotate / .9, forwardBack);
 
         // to test out other driving method comment out above and uncomment below
         // driveTrain.semiConstantCurvatureDrive(forwardBack, rotate);

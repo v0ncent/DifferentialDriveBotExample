@@ -1,10 +1,12 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -16,6 +18,14 @@ public class DriveTrain extends SubsystemBase {
     
     private final MotorControllerGroup leftGroup = new MotorControllerGroup(leftLeader, leftFollower);
     private final MotorController rightGroup = new MotorControllerGroup(rightLeader, rightFollower);
+
+    private final RelativeEncoder leftEncoder = leftLeader.getEncoder();
+    private final RelativeEncoder rightEncoder = leftFollower.getEncoder();
+
+    public DriveTrain() {
+        leftFollower.follow(leftLeader);
+        rightFollower.follow(rightLeader);
+    }
 
     /*
      * Think of a X,Y plane (What you would use to create a graph).
@@ -29,7 +39,7 @@ public class DriveTrain extends SubsystemBase {
      * |      |        |
      * -----------------
      */
-    public void arcadeDrive(double drive, double rotate) {
+    public void arcadeDrive(double rotate, double drive) {
         // variables for determening the quadrants
         double maximum = Math.max(Math.abs(drive), Math.abs(rotate));
         double total = drive + rotate;
@@ -55,24 +65,39 @@ public class DriveTrain extends SubsystemBase {
         }
     }
 
-    public void semiConstantCurvatureDrive(double T, double S) {
-        // calculate semi-constant curvature values
-        double L = 12 * (((T + Math.abs(T) * S) + (T+S)) / 2);
-        double R = 12 * (((T - Math.abs(T) * S) + (T-S)) / 2);
+    public double ticks2Feet(double encoderPosition) {
+        return encoderPosition * ((6*Math.PI)/71.4);
+    }
+    
+    @Override
+    public void periodic() {
+        SmartDashboard.putNumber("Front Left Motor Current", leftLeader.getOutputCurrent());
+        SmartDashboard.putNumber("Back Left Motor Current", leftFollower.getOutputCurrent());
+        SmartDashboard.putNumber("Front Right Motor Current", rightLeader.getOutputCurrent());
+        SmartDashboard.putNumber("Back Right Motor Current", rightFollower.getOutputCurrent());
 
-        // Determine maximum output
-        double m = Math.max(Math.abs(T),Math.abs(S));
+        SmartDashboard.putNumber("Left Encoder Value (feet)", ticks2Feet(-leftEncoder.getPosition()));
+        SmartDashboard.putNumber("Right Encoder Value (feet) ", ticks2Feet(-rightEncoder.getPosition()));
 
-        // scale if needed 
-        if (m > 1.0) {
-            L /= m;
-            R /= m;
-        }
+        SmartDashboard.putNumber("Left Encoder Rotations", getLefEncoderPosition());
+        SmartDashboard.putNumber("Right Encoder Rotations", getLefEncoderPosition());
 
-        // set mototrs to calculated power
-        leftGroup.set(L);
-        rightGroup.set(R);
+    }
 
+    public void teleOpPeriodic() {
+    }
+
+    public void resetEncoders() {
+        leftEncoder.setPosition(0);
+        rightEncoder.setPosition(0);
+    }
+
+    public double getLefEncoderPosition() {
+        return -leftEncoder.getPosition();
+    }
+
+    public double getRightEncoderPosition() {
+        return -rightEncoder.getPosition();
     }
 
 }

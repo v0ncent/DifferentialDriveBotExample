@@ -4,9 +4,17 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.DriveTrain;
+
 public final class Autos {
 
   private Autos() {
     throw new UnsupportedOperationException("This is a utility class!");
   }
+
+  public static Command move10Feet(DriveTrain driveTrain) {
+    return Autos.move10Feet(driveTrain);
+  }
+  
 }
